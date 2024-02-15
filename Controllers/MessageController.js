@@ -4,18 +4,23 @@ const Chat=require('../Models/Chat')
 const User=require('../Models/Users')
 const BadRequestError=require('../errors/bad-request')
 
-const getAllMessages=expressAsyncHandler(async(req,res)=>{
-    try {
-        const messages=await Message.find({chat:req.params.chatId})
-        .populate("sender","name email")
-        .populate("reciever")
-        .populate("chat")
-        res.json(messages)
-    } 
-    catch (error) {
-        throw new BadRequestError("cant get all the messages",error.message)
-    }
-})
+const getAllMessages = expressAsyncHandler(async (req, res) => {
+  try {
+    // console.log("Chat ID:", req.params.chatId);
+    // const chatId=req.params.chatId;
+    // console.log(chatId)
+    const messages = await Message.find({chat: req.params.chatId})
+      .populate("sender", "username email")
+      .populate("reciever")
+      .populate("chat");
+    console.log("Fetched Messages:", messages);
+    res.json(messages);
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 const sendMessage=expressAsyncHandler(async(req,res)=>{
     const{chatId,content}=req.body
@@ -26,18 +31,18 @@ const sendMessage=expressAsyncHandler(async(req,res)=>{
     var newMessage={
         sender:req.user._id,
         content:content,
-        chatId:chatId
+        chat:chatId
     }
     try {
         var message = await Message.create(newMessage);
     
         console.log(message);
-        message = await message.populate("sender", "name pic");
+        message = await message.populate("sender", "name");
         message = await message.populate("chat");
         message = await message.populate("reciever");
         message = await User.populate(message, {
           path: "chat.users",
-          select: "name email",
+          select: "username email",
         });
     
         await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
