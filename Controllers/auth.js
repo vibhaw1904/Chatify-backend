@@ -83,7 +83,7 @@ const fetchAllUsersController = expressAsyncHandler(async (req, res) => {
       res.send(users);
     });
     
-
+  
 const searchUser = async (req, res) => {
     const { search } = req.query;
   
@@ -93,4 +93,4 @@ const searchUser = async (req, res) => {
   
     res.status(StatusCodes.OK).json(user);
   };
-  module.exports={login,registerUser,searchUser,fetchAllUsersController,}
+  module.exports={login,registerUser,searchUser,fetchAllUsersController}

@@ -50,16 +50,16 @@ io.on('connection', (socket) => {
         socket.join(room);
     });
 
-    socket.on("new message", (newMessageStatus) => {
-      var chat = newMessageStatus.chat;
-      if (!chat.users) {
-          return console.log("chat users are not defined");
-      }
-      chat.users.forEach(user => {
-          if (user._id == newMessageStatus.sender._id) return;
-         
-          newMessageStatus.sender = user; 
-          socket.in(user._id).emit("message received", newMessageStatus);
-      });
+socket.on("new message", (newMessageStatus) => {
+    var chat = newMessageStatus.chat;
+    if (!chat.users) {
+      return console.log("chat users are not defined");
+    }
+    chat.users.forEach(user => {
+      if (user._id == newMessageStatus.sender._id) return;
+      newMessageStatus.sender = user;
+      socket.in(user._id).emit("message received", newMessageStatus);
+    });
   });
+  
 });
