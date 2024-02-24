@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node backend/server.js",
-    "server": "nodemon backend/server.js",
+    "server": " backend/server.js",
     "build":"npm i"
   },
   "author": "vibhaw",
